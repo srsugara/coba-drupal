@@ -1,0 +1,223 @@
+<?php
+/**
+ * Implements hook_services_resources().
+ */
+function gaharu_services_services_resources() {
+  $definition = array(
+    'operator' => array(
+      'operations' => array(
+        'retrieve' => array(
+          'help' => 'Detail Operator Data.',
+          'callback' => '_load_operator_data',
+          'access callback' => '_operator_resource_access',
+          'access arguments append' => FALSE,
+          'args' => array(
+            array(
+              'name' => 'operatorcode',
+              'type' => 'int',
+              'description' => 'Operator Code.',
+              'source' => array(
+                'path' => 'operatorcode',
+              ),
+              'optional' => FALSE,
+            ),
+          ),
+        ),
+      ),
+    ),
+    'partner' => array(
+      'operations' => array(
+        'retrieve' => array(
+          'help' => 'GET Redeem Token.',
+          'callback' => '_get_redeem_token',
+          'access callback' => '_operator_resource_access',
+          'access arguments append' => FALSE,
+          'args' => array(
+            array(
+              'name' => 'session_id',
+              'type' => 'String',
+              'description' => 'Browser Session Id.',
+              'source' => array(
+                'path' => 'session_id',
+              ),
+              'optional' => FALSE,
+            ),
+          ),
+        ),
+      ),
+      'actions' => array(
+        'detail_redeem_page' => array(
+          'help' => 'Detail Redeem Page Data.',
+          'callback' => '_load_redeem_page_data',
+          'access callback' => 'services_access_menu',
+          'args' => array(
+            array(
+              'name' => 'partnerid',
+              'type' => 'int',
+              'description' => 'Partner Id.',
+              'source' => array(
+                'data' => 'partnerid',
+                'param' => 'partnerid',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+          ),
+        ),
+      ),
+    ),
+    'voucher' => array(
+      'actions' => array(
+        'redeem' => array(
+          'help' => 'Redeem Gift Card Voucher.',
+          'callback' => '_redeem_gaharu_voucher',
+          'access callback' => 'services_access_menu',
+          'args' => array(
+            array(
+              'name' => 'voucher',
+              'type' => 'string',
+              'description' => 'Voucher To Redeem',
+              'source' => array(
+                'data' => 'voucher',
+                'param' => 'voucher',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+            array(
+              'name' => 'customer_number',
+              'type' => 'string',
+              'description' => 'Customer Number to Top Uped',
+              'source' => array(
+                'data' => 'customer_number',
+                'param' => 'customer_number',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+          ),
+        ),
+        'redeemv2' => array(
+          'help' => 'Redeem Gift Card Voucher Version 2.',
+          'callback' => '_redeem_gaharu_voucher_v2',
+          'access callback' => 'services_access_menu',
+          'args' => array(
+            array(
+              'name' => 'sign_data',
+              'type' => 'string',
+              'description' => 'Sign Data To Redeem',
+              'source' => array(
+                'data' => 'sign_data',
+                'param' => 'sign_data',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+            array(
+              'name' => 'partner_id',
+              'type' => 'string',
+              'description' => 'Partner ID to Top Uped',
+              'source' => array(
+                'data' => 'partner_id',
+                'param' => 'partner_id',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+          ),
+        ),
+        'redeems' => array(
+          'help' => 'Redeem Gift Card Voucher for Public Partner.',
+          'callback' => '_redeem_gaharu_voucher_public',
+          'access callback' => 'services_access_menu',
+          'args' => array(
+            array(
+              'name' => 'sign_data',
+              'type' => 'string',
+              'description' => 'Sign Data To Redeem',
+              'source' => array(
+                'data' => 'sign_data',
+                'param' => 'sign_data',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+            array(
+              'name' => 'partner_id',
+              'type' => 'string',
+              'description' => 'Partner ID to Top Uped',
+              'source' => array(
+                'data' => 'partner_id',
+                'param' => 'partner_id',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+          ),
+        ),
+        'data_package' => array(
+          'help' => 'Redeem Gift Card Voucher Data Package for Public.',
+          'callback' => '_redeem_gaharu_voucher_public_data',
+          'access callback' => 'services_access_menu',
+          'args' => array(
+            array(
+              'name' => 'sign_data',
+              'type' => 'string',
+              'description' => 'Sign Data To Redeem',
+              'source' => array(
+                'data' => 'sign_data',
+                'param' => 'sign_data',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+            array(
+              'name' => 'partner_id',
+              'type' => 'string',
+              'description' => 'Partner ID to Top Uped',
+              'source' => array(
+                'data' => 'partner_id',
+                'param' => 'partner_id',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+          ),
+        ),
+        'bonabo' => array(
+          'help' => 'Redeem Gift Card Voucher For Bonabo.',
+          'callback' => '_redeem_gaharu_voucher_bonabo',
+          'access callback' => 'services_access_menu',
+          'args' => array(
+            array(
+              'name' => 'sign_data',
+              'type' => 'string',
+              'description' => 'Sign Data To Redeem',
+              'source' => array(
+                'data' => 'sign_data',
+                'param' => 'sign_data',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+            array(
+              'name' => 'partner_id',
+              'type' => 'string',
+              'description' => 'Partner ID to Top Uped',
+              'source' => array(
+                'data' => 'partner_id',
+                'param' => 'partner_id',
+              ),
+              'optional' => FALSE,
+              'http_method' => 'POST',
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  return $definition;
+}
+
+?>

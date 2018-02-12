@@ -1,0 +1,55 @@
+<?php
+
+// test_service.install
+/**
+* Implementation of hook_schema().
+*/
+function test_service_schema() {
+  $schema['test'] = array(
+    'description' => t('Stores information about tests.'),
+    'fields' => array(
+      'id' => array(
+        'description' => t('The primary identifier for a test.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => t('The user that created the test.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => t('The timestamp for when the test was created.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'modified' => array(
+        'description' => t('The timestamp for when the test was modified.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'subject' => array(
+        'description' => t('The subject of the test'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'test' => array(
+        'description' => t('The test'),
+        'type' => 'text',
+        'size' => 'medium',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+?>

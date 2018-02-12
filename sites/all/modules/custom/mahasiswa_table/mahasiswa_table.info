@@ -1,0 +1,4 @@
+name = “Mahasiswa Table”
+description = “Testing crud table for Drupal.”
+core = 7.x
+configure = admin/custom/mahasiswa_table

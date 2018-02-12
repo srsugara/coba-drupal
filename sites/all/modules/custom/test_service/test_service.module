@@ -1,0 +1,284 @@
+<?php
+// test_service.module
+/** Gets a test object by id.
+*
+* @param int $id
+* @return object
+*/
+function test_service_get_test($id) {
+  return db_query("SELECT * FROM {test} WHERE id='".$id."'")->fetchAll();
+}
+ 
+/** Create a test to the database
+*
+* @param object $test
+* @return void
+*/
+function test_service_create_test($data) {
+  // $primary_key = !empty($test->id) ? array('id') : NULL;
+  // drupal_write_record('test', $test, $primary_key);
+  db_insert('test')
+  ->fields(array('uid','created','modified','subject','test'))
+  ->values($data)
+  ->execute();
+}
+
+/** Update a test to the database
+*
+* @param object $test
+* @return void
+*/
+function test_service_update_test($data) {
+  // $primary_key = !empty($test->id) ? array('id') : NULL;
+  // drupal_write_record('test', $test, $primary_key);
+  db_update('test')
+  ->fields(array(
+    'modified' => $data["modified"],
+    'subject' => $data["subject"],
+    'test' => $data["test"]
+  ))
+  ->condition('id', $data["id"], '=')
+  ->execute();
+}
+ 
+/**
+* Deletes a test from the database.
+*
+* @param int $id
+* @return void
+*/
+function test_service_delete_test($id) {
+  db_query("DELETE FROM {test} WHERE id='".$id."'");
+}
+ 
+/**
+* Implementation of hook_services_services().
+*/
+function test_service_services_resources () {
+  $definition = array(
+      'test' => array(
+          'retrieve' => array(
+            'help' => 'Retrieves a test',
+            'file' => array('file' => 'inc', 'module' => 'test_service'),
+            'callback' => '_test_service_retrieve',
+            'access callback' => '_test_service_access',
+            'access arguments' => array('view'),
+            'access arguments append' => TRUE,
+            'args' => array(
+              array(
+                'name' => 'id',
+                'type' => 'int',
+                'description' => 'The id of the test to get',
+                'source' => array(
+                  'path' => '0'
+                ),
+                'optional' => FALSE,
+              ),
+            ),
+          ),      
+          'create' => array(
+            'help' => 'Creates a test',
+            'file' => array('file' => 'inc', 'module' => 'test_service'),
+            'callback' => '_test_service_create',
+            'access callback' => 'services_access_menu',
+            // 'access arguments' => array('test service create'),
+            // 'access arguments append' => FALSE,
+            'args' => array(
+              array(
+                'name' => 'subject',
+                'type' => 'string',
+                'description' => 'The test object',
+                'source' => array(
+                  'data' => 'subject',
+                  'param' => 'subject',
+                ),
+                'optional' => FALSE,
+                'http_method' => 'POST',
+              ),
+              array(
+                'name' => 'test',
+                'type' => 'string',
+                'description' => 'The test object',
+                'source' => array(
+                  'data' => 'test',
+                  'param' => 'test',
+                ),
+                'optional' => FALSE,
+                'http_method' => 'POST',
+              ),
+            ),
+          ),
+          'update' => array(
+            'help' => 'Updates a test',
+            'file' => array('file' => 'inc', 'module' => 'test_service'),
+            'callback' => '_test_service_update',
+            'access callback' => '_test_service_access',
+            'access arguments' => array('update'),
+            'access arguments append' => TRUE,
+            'args' => array(
+              array(
+                'name' => 'id',
+                'type' => 'int',
+                'description' => 'The id of the node to update',
+                'source' => array('path' => '0'),
+                'optional' => FALSE,
+              ),
+              array(
+                'name' => 'subject',
+                'type' => 'string',
+                'description' => 'The test object',
+                'source' => array(
+                  'data' => 'subject',
+                  'param' => 'subject',
+                ),
+                'optional' => FALSE,
+                'http_method' => 'POST',
+              ),
+              array(
+                'name' => 'test',
+                'type' => 'string',
+                'description' => 'The test object',
+                'source' => array(
+                  'data' => 'test',
+                  'param' => 'test',
+                ),
+                'optional' => FALSE,
+                'http_method' => 'POST',
+              ),
+              // array(
+              //   'name' => 'data',
+              //   'type' => 'struct',
+              //   'description' => 'The test data object',
+              //   'source' => 'data',
+              //   'optional' => FALSE,
+              // ),
+            ),
+          ),
+          'delete' => array(
+            'help' => 'Deletes a test',
+            'file' => array('file' => 'inc', 'module' => 'test_service'),
+            'callback' => '_test_service_delete',
+            'access callback' => '_test_service_access',
+            'access arguments' => array('delete'),
+            'access arguments append' => TRUE,
+            'args' => array(
+              array(
+                'name' => 'id',
+                'type' => 'int',
+                'description' => 'The id of the test to delete',
+                'source' => array('path' => '0'),
+                'optional' => FALSE,
+              ),
+            ),
+          ),  
+      ),
+  );
+
+  return $definition;
+  // return array(
+  //   'test' => array(
+  //     'retrieve' => array(
+  //       'help' => 'Retrieves a test',
+  //       'file' => array('file' => 'inc', 'module' => 'test_service'),
+  //       'callback' => '_test_service_retrieve',
+  //       'access callback' => '_test_service_access',
+  //       'access arguments' => array('view'),
+  //       'access arguments append' => TRUE,
+  //       'args' => array(
+  //         array(
+  //           'name' => 'id',
+  //           'type' => 'int',
+  //           'description' => 'The id of the test to get',
+  //           'source' => array('path' => '0'),
+  //           'optional' => FALSE,
+  //         ),
+  //       ),
+  //     ),
+  //     'create' => array(
+  //       'help' => 'Creates a test',
+  //       'file' => array('file' => 'inc', 'module' => 'test_service'),
+  //       'callback' => '_test_service_create',
+  //       'access arguments' => array('test service create'),
+  //       'access arguments append' => FALSE,
+  //       'args' => array(
+  //         array(
+  //           'name' => 'data',
+  //           'type' => 'string',
+  //           'description' => 'The test object',
+  //           'source' => 'data',
+  //           'optional' => FALSE,
+  //         ),
+  //       ),
+  //     ),
+  //     'update' => array(
+  //       'help' => 'Updates a test',
+  //       'file' => array('file' => 'inc', 'module' => 'test_service'),
+  //       'callback' => '_test_service_update',
+  //       'access callback' => '_test_service_access',
+  //       'access arguments' => array('update'),
+  //       'access arguments append' => TRUE,
+  //       'args' => array(
+  //         array(
+  //           'name' => 'id',
+  //           'type' => 'int',
+  //           'description' => 'The id of the node to update',
+  //           'source' => array('path' => '0'),
+  //           'optional' => FALSE,
+  //         ),
+  //         array(
+  //           'name' => 'data',
+  //           'type' => 'struct',
+  //           'description' => 'The test data object',
+  //           'source' => 'data',
+  //           'optional' => FALSE,
+  //         ),
+  //       ),
+  //     ),
+  //     'delete' => array(
+  //       'help' => 'Deletes a test',
+  //       'file' => array('file' => 'inc', 'module' => 'test_service'),
+  //       'callback' => '_test_service_delete',
+  //       'access callback' => '_test_service_access',
+  //       'access arguments' => array('delete'),
+  //       'access arguments append' => TRUE,
+  //       'args' => array(
+  //         array(
+  //           'name' => 'nid',
+  //           'type' => 'int',
+  //           'description' => 'The id of the test to delete',
+  //           'source' => array('path' => '0'),
+  //           'optional' => FALSE,
+  //         ),
+  //       ),
+  //     ),
+  //     'index' => array(
+  //       'help' => 'Retrieves a listing of tests',
+  //       'file' => array('file' => 'inc', 'module' => 'test_service'),
+  //       'callback' => '_test_service_index',
+  //       'access callback' => 'user_access',
+  //       'access arguments' => array('access content'),
+  //       'access arguments append' => FALSE,
+  //       'args' => array(
+  //         array(
+  //           'name' => 'page',
+  //           'type' => 'int',
+  //           'description' => '',
+  //           'source' => array(
+  //             'params' => 'page',
+  //           ),
+  //           'optional' => TRUE,
+  //           'default value' => 0,
+  //         ),
+  //         array(
+  //          'name' => 'parameters',
+  //          'type' => 'array',
+  //          'description' => '',
+  //          'source' => 'param',
+  //          'optional' => TRUE,
+  //          'default value' => array(),
+  //         ),
+  //       ),
+  //     ),
+  //   ),
+  // );
+}

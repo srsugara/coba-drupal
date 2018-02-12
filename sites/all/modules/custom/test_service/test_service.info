@@ -1,0 +1,7 @@
+name = Test Service
+description = Services for the test content type.
+package = test example
+dependencies[] = services
+files[] = test_service.inc
+files[] = test_service.module
+core = 7.x
